@@ -11,6 +11,7 @@ const controller = new NoteController(repository);
 
 notesRouter.post('/', authMiddleware, (req, res) => controller.create(req, res));
 notesRouter.get('/', authMiddleware, (req, res) => controller.getAll(req, res));
+notesRouter.get('/:noteId', authMiddleware, (req, res) => controller.getOne(req, res));
 
 
 export { notesRouter };

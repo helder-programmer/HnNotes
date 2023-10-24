@@ -2,6 +2,7 @@ import { prismaClient } from "../../database";
 import { INoteRepository } from "../types/INoteRepository";
 import { ICreateNoteDTO } from "./dtos/ICreateNoteDTO";
 import { IFindAllDTO } from "./dtos/IFindAllDTO";
+import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
 
 export class NoteRepository implements INoteRepository {
     public async create({ userId, title }: ICreateNoteDTO) {
@@ -22,7 +23,18 @@ export class NoteRepository implements INoteRepository {
             where: { userId },
             orderBy: { createdAt: 'desc' }
         });
-        
+
         return searchedNotes;
+    }
+
+    public async findById({ userId, noteId }: IFindByIdDTO) {
+        const searchedNote = await prismaClient.note.findFirst({
+            where: {
+                noteId,
+                userId
+            }
+        });
+
+        return searchedNote;
     }
 }

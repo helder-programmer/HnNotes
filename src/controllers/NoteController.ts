@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { NotFoundError } from "../helpers/errors";
 import { INoteRepository } from "../repositories/types/INoteRepository";
 
 export class NoteController {
@@ -19,7 +20,20 @@ export class NoteController {
     }
 
     public async getAll(req: Request, res: Response) {
-        const serachedNotes = await this.repository.findAll({ userId: req.user!.userId });
-        return res.status(200).json(serachedNotes);
+        const searchedNotes = await this.repository.findAll({ userId: req.user!.userId });
+        return res.status(200).json(searchedNotes);
+    }
+
+    public async getOne(req: Request, res: Response) {
+        const { noteId } = req.params;
+        const userId = req.user!.userId;
+        console.log(noteId);
+
+        const searchedNote = await this.repository.findById({ noteId, userId });
+
+        if (!searchedNote) throw new NotFoundError('Note not found!');
+
+        return res.status(200).json(searchedNote);
+
     }
 }

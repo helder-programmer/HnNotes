@@ -24,7 +24,7 @@ model User {
 }
 
 model Note {
-    nodeId  String @id @default(uuid()) @map("note_id")
+    noteId  String @id @default(uuid()) @map("note_id")
     title   String
     content String @db.Text
     createdAt DateTime @default(now()) @map("created_at")
