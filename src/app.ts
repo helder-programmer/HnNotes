@@ -1,8 +1,10 @@
 import 'express-async-errors';
-import express, { application, Express } from 'express';
+import express, { Express } from 'express';
 import cors from 'cors';
+
 import { usersRouter } from './routes/users';
 import { errorMiddleware } from './middlewares/error';
+import { notesRouter } from './routes/notes';
 
 
 class App {
@@ -25,6 +27,7 @@ class App {
 
     public routes() {
         this.express.use('/users', usersRouter);
+        this.express.use('/notes', notesRouter);
     }
 
     public errorsHandlers() {
