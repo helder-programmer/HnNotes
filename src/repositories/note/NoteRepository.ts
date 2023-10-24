@@ -9,7 +9,7 @@ export class NoteRepository implements INoteRepository {
         const note = await prismaClient.note.create({
             data: {
                 title,
-                content: 'New Note...',
+                content: 'New Note',
                 userId
             }
         });
@@ -18,7 +18,11 @@ export class NoteRepository implements INoteRepository {
     }
 
     public async findAll({ userId }: IFindAllDTO) {
-        const searchedNotes = await prismaClient.note.findMany({ where: { userId } });
+        const searchedNotes = await prismaClient.note.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'desc' }
+        });
+        
         return searchedNotes;
     }
 }
