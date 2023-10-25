@@ -36,4 +36,20 @@ export class NoteController {
         return res.status(200).json(searchedNote);
 
     }
+
+    public async update(req: Request, res: Response) {
+        const userId = req.user!.userId;
+        const { noteId } = req.params;
+
+        const noteToUpdate = await this.repository.findById({ noteId, userId });
+
+        if (!noteToUpdate) throw new NotFoundError('Note not found!');
+
+        const dataToUpdate = {userId, noteId, ...req.body};
+
+        const updatedNote = await this.repository.update(dataToUpdate);
+
+        return res.status(200).json(updatedNote);
+
+    }
 }

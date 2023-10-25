@@ -3,6 +3,7 @@ import { INoteRepository } from "../types/INoteRepository";
 import { ICreateNoteDTO } from "./dtos/ICreateNoteDTO";
 import { IFindAllDTO } from "./dtos/IFindAllDTO";
 import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
+import { IUpdateNoteDTO } from "./dtos/IUpdateNoteDTO";
 
 export class NoteRepository implements INoteRepository {
     public async create({ userId, title }: ICreateNoteDTO) {
@@ -36,5 +37,22 @@ export class NoteRepository implements INoteRepository {
         });
 
         return searchedNote;
+    }
+
+    public async update({ noteId, userId, title, content, oldNote }: IUpdateNoteDTO) {
+        const objectToUpdate: any = {};
+
+        if (title != oldNote?.title) objectToUpdate.title = title;
+        if (content != oldNote?.content) objectToUpdate.content = content;
+
+        const updatedNote = await prismaClient.note.update({
+            data: objectToUpdate,
+            where: {
+                noteId
+            }
+        });
+
+
+        return updatedNote;
     }
 }
