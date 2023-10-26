@@ -1,3 +1,4 @@
+import { Note } from "@prisma/client";
 import { prismaClient } from "../../database";
 import { INoteRepository } from "../types/INoteRepository";
 import { ICreateNoteDTO } from "./dtos/ICreateNoteDTO";
@@ -39,7 +40,7 @@ export class NoteRepository implements INoteRepository {
         return searchedNote;
     }
 
-    public async update({ noteId, userId, title, content, oldNote }: IUpdateNoteDTO) {
+    public async update({ title, content, oldNote }: IUpdateNoteDTO) {
         const objectToUpdate: any = {};
 
         if (title != oldNote?.title) objectToUpdate.title = title;
@@ -48,11 +49,31 @@ export class NoteRepository implements INoteRepository {
         const updatedNote = await prismaClient.note.update({
             data: objectToUpdate,
             where: {
-                noteId
+                noteId: oldNote.noteId
             }
         });
 
 
         return updatedNote;
+    }
+
+    public async remove(noteToRemove: Note) {
+        await prismaClient.note.delete({
+            where: {
+                noteId: noteToRemove.noteId
+            }
+        });
+    }
+
+    public async findByTitle(title: string) {
+        const searchedNotes = await prismaClient.note.findMany({
+            where:{
+                title: {
+                    startsWith: title
+                }
+            }
+        });
+
+        return searchedNotes;
     }
 }

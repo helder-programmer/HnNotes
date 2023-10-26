@@ -9,4 +9,6 @@ export interface INoteRepository {
     findAll(data: IFindAllDTO): Promise<Note[]>;
     findById(data: IFindByIdDTO): Promise<Note | null>;
     update(data: IUpdateNoteDTO): Promise<Note>;
+    remove(noteToRemove: Note): Promise<void>;
+    findByTitle(title: string): Promise<Note[]>;
 }

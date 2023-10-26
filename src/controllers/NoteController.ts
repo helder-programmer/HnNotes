@@ -27,7 +27,6 @@ export class NoteController {
     public async getOne(req: Request, res: Response) {
         const { noteId } = req.params;
         const userId = req.user!.userId;
-        console.log(noteId);
 
         const searchedNote = await this.repository.findById({ noteId, userId });
 
@@ -41,15 +40,31 @@ export class NoteController {
         const userId = req.user!.userId;
         const { noteId } = req.params;
 
+
         const noteToUpdate = await this.repository.findById({ noteId, userId });
 
         if (!noteToUpdate) throw new NotFoundError('Note not found!');
 
-        const dataToUpdate = {userId, noteId, ...req.body};
+        const dataToUpdate = {
+            oldNote: noteToUpdate,
+            ...req.body
+        };
 
         const updatedNote = await this.repository.update(dataToUpdate);
 
         return res.status(200).json(updatedNote);
 
+    }
+
+    public async remove(req: Request, res: Response) {
+        const { noteId } = req.params;
+        const userId = req.user!.userId;
+
+        const noteToRemove = await this.repository.findById({ noteId, userId });
+
+        if (!noteToRemove) throw new NotFoundError('Note not found!');
+
+        await this.repository.remove(noteToRemove);
+        return res.status(200).json({ message: 'Note successfully deleted' });
     }
 }
