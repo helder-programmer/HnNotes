@@ -71,7 +71,8 @@ export class NoteRepository implements INoteRepository {
                 title: {
                     startsWith: title
                 }
-            }
+            },
+            orderBy: {createdAt: 'desc'}
         });
 
         return searchedNotes;

@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -12,6 +13,6 @@ declare global {
     }
 }
 
-app.listen(8000, '192.168.0.24', () => {
+app.listen(8000, '192.168.3.7', () => {
     console.log('Servidor Rodando');
 });

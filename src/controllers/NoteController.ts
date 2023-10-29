@@ -67,4 +67,12 @@ export class NoteController {
         await this.repository.remove(noteToRemove);
         return res.status(200).json({ message: 'Note successfully deleted' });
     }
+
+    public async searchNotes(req: Request, res: Response) {
+        const { title } = req.query as { title: string };
+
+        const searchedNotes = await this.repository.findByTitle(title);
+
+        return res.status(200).json(searchedNotes);
+    }
 }
