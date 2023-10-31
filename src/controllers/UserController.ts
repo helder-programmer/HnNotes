@@ -12,10 +12,14 @@ export class UserController {
     }
 
     public async create(req: Request, res: Response) {
-        const { password } = req.body;
+        const { password, email } = req.body;
         const hashedPassword = await bcrypt.hash(password, 8);
 
         const data = { ...req.body, password: hashedPassword };
+
+        const emailAlreadyExists = await this.repository.findByEmail(email);
+
+        if (emailAlreadyExists) throw new UnauthorizedError('E-mail already exists!');
 
         const user = await this.repository.create(data);
         return res.status(200).json(user);
@@ -25,7 +29,7 @@ export class UserController {
     public async login(req: Request, res: Response) {
         const { email, password } = req.body;
 
-        const user = await this.repository.findByEmail({ email });
+        const user = await this.repository.findByEmail(email);
 
         if (!user) throw new UnauthorizedError('Invalid e-mail or password!');
 
@@ -36,9 +40,7 @@ export class UserController {
 
         const token = generateToken(user);
 
-
         return res.status(200).json({ token, user });
-
     }
 
 

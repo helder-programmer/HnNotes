@@ -1,7 +1,6 @@
 import { prismaClient } from "../../database";
 import { IUserRepository } from "../types/IUserRepository";
 import { ICreateUserDTO } from "./dtos/ICreateUserDTO";
-import { IFindByEmailDTO } from "./dtos/IFindByEmailDTO";
 import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
 import { IUpdatePasswordDTO } from "./dtos/IUpdatePasswordDTO";
 import { IUpdateUserDTO } from "./dtos/IUpdateUserDTO";
@@ -20,7 +19,7 @@ export class UserRepository implements IUserRepository {
         return user;
     }
 
-    public async findByEmail({ email }: IFindByEmailDTO) {
+    public async findByEmail(email: string) {
         const searchedUser = await prismaClient.user.findFirst({
             where: { email }
         });
