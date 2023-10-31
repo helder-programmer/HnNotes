@@ -46,7 +46,7 @@ export class NoteController {
         if (!noteToUpdate) throw new NotFoundError('Note not found!');
 
         const dataToUpdate = {
-            oldNote: noteToUpdate,
+            noteToUpdate,
             ...req.body
         };
 

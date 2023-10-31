@@ -40,16 +40,16 @@ export class NoteRepository implements INoteRepository {
         return searchedNote;
     }
 
-    public async update({ title, content, oldNote }: IUpdateNoteDTO) {
+    public async update({ title, content, noteToUpdate }: IUpdateNoteDTO) {
         const objectToUpdate: any = {};
 
-        if (title != oldNote?.title) objectToUpdate.title = title;
-        if (content != oldNote?.content) objectToUpdate.content = content;
+        if (title != noteToUpdate?.title) objectToUpdate.title = title;
+        if (content != noteToUpdate?.content) objectToUpdate.content = content;
 
         const updatedNote = await prismaClient.note.update({
             data: objectToUpdate,
             where: {
-                noteId: oldNote.noteId
+                noteId: noteToUpdate.noteId
             }
         });
 

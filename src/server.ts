@@ -13,6 +13,6 @@ declare global {
     }
 }
 
-app.listen(8000, '192.168.3.7', () => {
+app.listen(8000, '192.168.0.80', () => {
     console.log('Servidor Rodando');
 });

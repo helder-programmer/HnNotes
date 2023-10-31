@@ -45,4 +45,32 @@ export class UserController {
     public async recoverUserInformations(req: Request, res: Response) {
         return res.status(200).json(req.user);
     }
+
+
+    public async update(req: Request, res: Response) {
+        const { name, email } = req.body;
+        const userToUpdate = req.user!;
+
+        const updatedUser = await this.repository.update({ userToUpdate, name, email });
+
+        return res.status(200).json(updatedUser);
+    }
+
+    public async updatePassword(req: Request, res: Response) {
+        const { oldPassword, newPassword } = req.body;
+        const userToUpdate = req.user!;
+
+        const isCorrectPassword = await bcrypt.compare(oldPassword, userToUpdate.password);
+
+        if (!isCorrectPassword) throw new UnauthorizedError('Incorrect old password!');
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 8);
+
+        await this.repository.updatePassword({
+            userToUpdate,
+            newPassword: hashedNewPassword
+        });
+
+        return res.status(200).json({ message: 'User suceesfully updated!' });
+    }
 }

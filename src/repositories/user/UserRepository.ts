@@ -3,6 +3,8 @@ import { IUserRepository } from "../types/IUserRepository";
 import { ICreateUserDTO } from "./dtos/ICreateUserDTO";
 import { IFindByEmailDTO } from "./dtos/IFindByEmailDTO";
 import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
+import { IUpdatePasswordDTO } from "./dtos/IUpdatePasswordDTO";
+import { IUpdateUserDTO } from "./dtos/IUpdateUserDTO";
 
 
 export class UserRepository implements IUserRepository {
@@ -34,5 +36,35 @@ export class UserRepository implements IUserRepository {
         });
 
         return user;
+    }
+
+    public async update({ userToUpdate, name, email }: IUpdateUserDTO) {
+
+        const objectToUpdate: any = {};
+
+
+        if (name != userToUpdate.name) objectToUpdate.name = name;
+        if (email != userToUpdate.email) objectToUpdate.email = email;
+
+
+        const updatedUser = await prismaClient.user.update({
+            data: objectToUpdate,
+            where: {
+                userId: userToUpdate.userId
+            }
+        });
+
+        return updatedUser;
+    }
+
+    public async updatePassword({ userToUpdate, newPassword }: IUpdatePasswordDTO) {
+        await prismaClient.user.update({
+            data: {
+                password: newPassword
+            },
+            where: {
+                userId: userToUpdate.userId
+            }
+        });
     }
 }
