@@ -11,36 +11,20 @@ export class UserController {
         this.repository = repository;
     }
 
-    public async create(req: Request, res: Response) {
-        const { password, email } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 8);
-
-        const data = { ...req.body, password: hashedPassword };
-
-        const emailAlreadyExists = await this.repository.findByEmail(email);
-
-        if (emailAlreadyExists) throw new UnauthorizedError('E-mail already exists!');
-
-        const user = await this.repository.create(data);
-        return res.status(200).json(user);
-    }
-
-
     public async login(req: Request, res: Response) {
-        const { email, password } = req.body;
+        const { email } = req.body;
 
-        const user = await this.repository.findByEmail(email);
+        const existentUser = await this.repository.findByEmail(email);
 
-        if (!user) throw new UnauthorizedError('Invalid e-mail or password!');
+        if (!existentUser) {
+            const user = await this.repository.create({ email, ...req.body });
+            const token = generateToken(user);
+            return res.status(200).json({ token, user });
+        }
 
-        const isCorrectPassword = await bcrypt.compare(password, user.password);
+        const token = generateToken(existentUser);
 
-        if (!isCorrectPassword) throw new UnauthorizedError('Invalid e-mail or password!');
-
-
-        const token = generateToken(user);
-
-        return res.status(200).json({ token, user });
+        return res.status(200).json({ token, user: existentUser });
     }
 
 
@@ -56,23 +40,5 @@ export class UserController {
         const updatedUser = await this.repository.update({ userToUpdate, name, email });
 
         return res.status(200).json(updatedUser);
-    }
-
-    public async updatePassword(req: Request, res: Response) {
-        const { oldPassword, newPassword } = req.body;
-        const userToUpdate = req.user!;
-
-        const isCorrectPassword = await bcrypt.compare(oldPassword, userToUpdate.password);
-
-        if (!isCorrectPassword) throw new UnauthorizedError('Incorrect old password!');
-
-        const hashedNewPassword = await bcrypt.hash(newPassword, 8);
-
-        await this.repository.updatePassword({
-            userToUpdate,
-            newPassword: hashedNewPassword
-        });
-
-        return res.status(200).json({ message: 'User suceesfully updated!' });
     }
 }

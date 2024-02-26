@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
@@ -14,23 +14,23 @@ model User {
     userId    String   @id @default(uuid()) @map("user_id")
     name      String
     email     String   @unique
-    password  String   @db.Text
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    
+    googleId  String   @unique @map("google_id")
+    picture   String
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
     notes Note[]
 
     @@map("tb_users")
 }
 
 model Note {
-    noteId  String @id @default(uuid()) @map("note_id")
-    title   String
-    content String @db.Text
+    noteId    String   @id @default(uuid()) @map("note_id")
+    title     String
+    content   String   @db.Text
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
-    userId String
-
+    userId    String
 
     user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 

@@ -2,17 +2,17 @@ import { prismaClient } from "../../database";
 import { IUserRepository } from "../types/IUserRepository";
 import { ICreateUserDTO } from "./dtos/ICreateUserDTO";
 import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
-import { IUpdatePasswordDTO } from "./dtos/IUpdatePasswordDTO";
 import { IUpdateUserDTO } from "./dtos/IUpdateUserDTO";
 
 
 export class UserRepository implements IUserRepository {
-    public async create({ name, email, password }: ICreateUserDTO) {
+    public async create({ name, email, picture, googleId }: ICreateUserDTO) {
         const user = await prismaClient.user.create({
             data: {
                 name,
                 email,
-                password
+                picture,
+                googleId
             }
         });
 
@@ -54,16 +54,5 @@ export class UserRepository implements IUserRepository {
         });
 
         return updatedUser;
-    }
-
-    public async updatePassword({ userToUpdate, newPassword }: IUpdatePasswordDTO) {
-        await prismaClient.user.update({
-            data: {
-                password: newPassword
-            },
-            where: {
-                userId: userToUpdate.userId
-            }
-        });
     }
 }
