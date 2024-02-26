@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import { IUserRepository } from "../repositories/types/IUserRepository";
-import bcrypt from 'bcrypt';
-import { UnauthorizedError } from "../helpers/errors";
 import { generateToken } from "../helpers/generateToken";
 
 export class UserController {
@@ -34,10 +32,10 @@ export class UserController {
 
 
     public async update(req: Request, res: Response) {
-        const { name, email } = req.body;
+        const { name } = req.body;
         const userToUpdate = req.user!;
 
-        const updatedUser = await this.repository.update({ userToUpdate, name, email });
+        const updatedUser = await this.repository.update({ userToUpdate, name });
 
         return res.status(200).json(updatedUser);
     }

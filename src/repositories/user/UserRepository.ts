@@ -37,14 +37,12 @@ export class UserRepository implements IUserRepository {
         return user;
     }
 
-    public async update({ userToUpdate, name, email }: IUpdateUserDTO) {
+    public async update({ userToUpdate, name }: IUpdateUserDTO) {
 
         const objectToUpdate: any = {};
 
 
         if (name != userToUpdate.name) objectToUpdate.name = name;
-        if (email != userToUpdate.email) objectToUpdate.email = email;
-
 
         const updatedUser = await prismaClient.user.update({
             data: objectToUpdate,
