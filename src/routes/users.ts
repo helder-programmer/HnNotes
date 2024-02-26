@@ -10,10 +10,8 @@ const controller = new UserController(repository);
 
 const usersRouter = Router();
 
-usersRouter.post('/', (req, res) => controller.create(req, res));
-usersRouter.post('/login', (req, res) => controller.login(req, res));
+usersRouter.post('/', (req, res) => controller.login(req, res));
 usersRouter.get('/me', authMiddleware, (req, res) => controller.recoverUserInformations(req, res));
 usersRouter.put('/', authMiddleware, (req, res) => controller.update(req, res));
-usersRouter.put('/password', authMiddleware, (req, res) => controller.updatePassword(req, res));
 
 export { usersRouter };
